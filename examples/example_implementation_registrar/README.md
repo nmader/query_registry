@@ -1,16 +1,16 @@
-# Query Registry [![Build Status](https://travis-ci.org/Islandora/query_registry.png?branch=7.x)](https://travis-ci.org/Islandora/query_registry)
+# Example Implementation Registrar
 
 ## Introduction
 
-This is a Drupal module to allow user management of query binding.
+This is an example module to demonstrate registering query implementations.
+
+## Requirements
+
+This module has a soft dependency on the Query Registry module.
 
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
-
-## Configuration
-
-Configuration is available at `admin/config/search/query_registry`.
 
 ## Troubleshooting/Issues
 

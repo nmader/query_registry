@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Primary hook implementations.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function example_query_registrar_menu() {
+  return array(
+    'example_query_registrar' => array(
+      'title' => 'Example Query View',
+      'description' => 'A view used to showcase the use of the Query Registry module.',
+      'page callback' => 'example_query_registrar_view',
+      'file' => 'includes/view.inc',
+      'type' => MENU_NORMAL_ITEM,
+      'access callback' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_query_registry_register_queries().
+ */
+function example_query_registrar_query_registry_register_queries() {
+  return array(
+    'example_query' => array(
+      'name' => t('Example Query'),
+      'description' => t('Example query description.'),
+    ),
+  );
+}

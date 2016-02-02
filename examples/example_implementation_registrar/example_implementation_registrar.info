@@ -1,0 +1,6 @@
+name = Example Implementation Registrar
+description = An example module to demonstrate registering query implementations.
+package = Query Registry
+version = 7.x-dev
+core = 7.x
+configure = admin/example_query_implementation

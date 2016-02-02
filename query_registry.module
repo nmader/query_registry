@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Primary hook implementations.
+ */
+
+// Hooks.
+const QUERY_REGISTRY_REGISTER_IMPLEMENTATION = 'query_registry_register_implementations';
+const QUERY_REGISTRY_REGISTER_QUERY = 'query_registry_register_queries';
+
+
+/**
+ * Implements hook_menu().
+ */
+function query_registry_menu() {
+  return array(
+    'admin/config/search/query_registry' => array(
+      'title' => 'Query Registry Configuration',
+      'description' => 'Select which queries to use.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('query_registry_admin_form'),
+      'file' => 'includes/admin.form.inc',
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Will run the query as outlined in the registry.
+ *
+ * @param string $query_identifier
+ *   The query to route.
+ * @param array $query_args
+ *   The parameters to pass to the query implementation.
+ *
+ * @return mixed
+ *   NULL for use module default or the result of the query.
+ */
+function query_registry_run_query($query_identifier, $query_args) {
+  $query_registers = variable_get('query_registry_selected_queries', array());
+
+  // If module defaults are to be used return NULL.
+  if (!isset($query_registers[$query_identifier])) {
+    return NULL;
+  }
+
+  $query_definitions = module_invoke($query_registers[$query_identifier], QUERY_REGISTRY_REGISTER_IMPLEMENTATION);
+  $query_definition = $query_definitions[$query_identifier];
+
+  // Include the necessary file.
+  $included = module_load_include(
+    $query_definition['extension'],
+    $query_definition['module'],
+    $query_definition['filename']
+  );
+  if (!$included) {
+    watchdog(
+      'query_registry',
+      'Could not include a query implementation. Please verify configuration.',
+      array(),
+      WATCHDOG_WARNING
+    );
+    return NULL;
+  }
+
+  return call_user_func_array($query_definition['callable'], $query_args);
+}
