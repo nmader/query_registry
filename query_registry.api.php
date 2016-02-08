@@ -34,8 +34,8 @@ function hook_query_registry_register_queries() {
  *   - name: A human readable name for the implementation.
  *   - description: A description of the implementation.
  *   - module: The module containing the implementation.
- *   - extension: The extension of the file containing the implementation.
- *   - filename: The name of the file containing the implementation.
+ *   - extension(optional): The ext of the file containing the implementation.
+ *   - filename(optional): The name of the file containing the implementation.
  *   - callable: A PHP callable for the implementation.
  *   - configure_path: Path to configure the implementation at.
  */

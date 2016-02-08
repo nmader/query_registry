@@ -9,6 +9,7 @@
 const QUERY_REGISTRY_REGISTER_IMPLEMENTATION = 'query_registry_register_implementations';
 const QUERY_REGISTRY_REGISTER_QUERY = 'query_registry_register_queries';
 
+const QUERY_REGISTRY_DEFAULT = 'module_default';
 
 /**
  * Implements hook_menu().
@@ -42,7 +43,7 @@ function query_registry_run_query($query_identifier, $query_args) {
   $query_registers = variable_get('query_registry_selected_queries', array());
 
   // If module defaults are to be used return NULL.
-  if (!isset($query_registers[$query_identifier])) {
+  if (!isset($query_registers[$query_identifier]) || $query_registers[$query_identifier] == QUERY_REGISTRY_DEFAULT) {
     return NULL;
   }
 
@@ -50,19 +51,21 @@ function query_registry_run_query($query_identifier, $query_args) {
   $query_definition = $query_definitions[$query_identifier];
 
   // Include the necessary file.
-  $included = module_load_include(
-    $query_definition['extension'],
-    $query_definition['module'],
-    $query_definition['filename']
-  );
-  if (!$included) {
-    watchdog(
-      'query_registry',
-      'Could not include a query implementation. Please verify configuration.',
-      array(),
-      WATCHDOG_WARNING
+  if (isset($query_definition['extension']) && isset($query_definition['filename'])) {
+    $included = module_load_include(
+      $query_definition['extension'],
+      $query_definition['module'],
+      $query_definition['filename']
     );
-    return NULL;
+    if (!$included) {
+      watchdog(
+        'query_registry',
+        'Could not include a query implementation. Please verify configuration.',
+        array(),
+        WATCHDOG_WARNING
+      );
+      return NULL;
+    }
   }
 
   return call_user_func_array($query_definition['callable'], $query_args);

@@ -20,8 +20,8 @@ function query_registry_admin_form() {
       '#type' => 'radios',
       '#title' => check_plain($query_def['name']),
       '#description' => check_plain($description),
-      '#default_value' => isset($defaults[$query]) ? $defaults[$query] : NULL,
-      '#options' => array('module_default' => t('No override')),
+      '#default_value' => isset($defaults[$query]) ? $defaults[$query] : QUERY_REGISTRY_DEFAULT,
+      '#options' => array(QUERY_REGISTRY_DEFAULT => t('No override')),
     );
 
     $implementations = array();
