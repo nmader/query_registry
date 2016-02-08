@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Primary hook implementations.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function example_implementation_registrar_menu() {
+  return array(
+    'admin/admin/example_query_implementation' => array(
+      'title' => 'Example Query Registry Configuration',
+      'description' => 'Configure the example query.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('example_implementation_registrar_admin_form'),
+      'file' => 'includes/admin.form.inc',
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Implements hook_query_registry_register_implementations().
+ */
+function example_implementation_registrar_query_registry_register_implementations() {
+  return array(
+    'example_query' => array(
+      'name' => t('Example Query Implementation'),
+      'description' => t('Example query implementation description'),
+      'module' => 'example_implementation_registrar',
+      'filename' => 'includes/query',
+      'extension' => 'inc',
+      'callable' => 'example_implementation_registrar_query_implementation',
+      'configure_path' => 'admin/admin/example_query_implementation',
+    ),
+  );
+}

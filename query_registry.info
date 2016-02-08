@@ -1,0 +1,6 @@
+name = Query Registry
+description =  A Drupal module to allow user management of query binding.
+package = Query Registry
+version = 7.x-dev
+core = 7.x
+configure = admin/config/search/query_registry

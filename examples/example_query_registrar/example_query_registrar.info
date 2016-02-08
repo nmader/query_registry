@@ -1,0 +1,5 @@
+name = Example Query Registrar
+description = An example module to demonstrate registering queries.
+package = Query Registry
+version = 7.x-dev
+core = 7.x
