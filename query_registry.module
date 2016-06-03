@@ -39,7 +39,7 @@ function query_registry_menu() {
  * @return mixed
  *   NULL for use module default or the result of the query.
  */
-function query_registry_run_query($query_identifier, $query_args) {
+function query_registry_run_query($query_identifier, $query_args = array()) {
   $query_registers = variable_get('query_registry_selected_queries', array());
 
   // If module defaults are to be used return NULL.
