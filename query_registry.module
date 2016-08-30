@@ -29,7 +29,7 @@ function query_registry_menu() {
 }
 
 /**
- * Will run the query as outlined in the registry.
+ * Run the query as outlined in the registry.
  *
  * @param string $query_identifier
  *   The query to route.
@@ -40,16 +40,11 @@ function query_registry_menu() {
  *   NULL for use module default or the result of the query.
  */
 function query_registry_run_query($query_identifier, $query_args = array()) {
-  $query_registers = variable_get('query_registry_selected_queries', array());
-
+  $query_definition = query_registry_get_query($query_identifier);
   // If module defaults are to be used return NULL.
-  if (!isset($query_registers[$query_identifier]) || $query_registers[$query_identifier] == QUERY_REGISTRY_DEFAULT) {
+  if (is_null($query_definition)) {
     return NULL;
   }
-
-  $query_definitions = module_invoke($query_registers[$query_identifier], QUERY_REGISTRY_REGISTER_IMPLEMENTATION);
-  $query_definition = $query_definitions[$query_identifier];
-
   // Include the necessary file.
   if (isset($query_definition['extension']) && isset($query_definition['filename'])) {
     $included = module_load_include(
@@ -69,4 +64,25 @@ function query_registry_run_query($query_identifier, $query_args = array()) {
   }
 
   return call_user_func_array($query_definition['callable'], $query_args);
+}
+
+/**
+ * Get the query as outlined in the registry.
+ *
+ * @param string $query_identifier
+ *   The query to route.
+ *
+ * @return mixed
+ *   NULL for use module default or the query array.
+ */
+function query_registry_get_query($query_identifier) {
+  $query_registers = variable_get('query_registry_selected_queries', array());
+
+  // If module defaults are to be used return NULL.
+  if (!isset($query_registers[$query_identifier]) || $query_registers[$query_identifier] == QUERY_REGISTRY_DEFAULT) {
+    return NULL;
+  }
+
+  $query_definitions = module_invoke($query_registers[$query_identifier], QUERY_REGISTRY_REGISTER_IMPLEMENTATION);
+  return $query_definitions[$query_identifier];
 }
