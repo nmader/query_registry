@@ -1,0 +1,29 @@
+language: php
+php:
+  - 5.3.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+branches:
+  only:
+    - /^7.x/
+env:
+  # Multiple Fedora tests are not needed in this case.
+  - FEDORA_VERSION="3.8.1"
+before_install:
+  - cd $HOME
+  - git clone -b 7.x git://github.com/Islandora/islandora.git
+  - export ISLANDORA_DIR=$HOME/islandora
+  - $HOME/islandora/tests/scripts/travis_setup.sh
+  - cd $HOME/drupal-*
+  - ln -s $TRAVIS_BUILD_DIR sites/all/modules/query_registry
+  - drush en --user=1 --yes query_registry
+script:
+  - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/query_registry
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer query_registry
+  - phpcpd --names *.module,*.inc,*.test sites/all/modules/query_registry
+  - drush test-run --uri=http://localhost:8081 "Query Registry"
+notifications:
+irc: "irc.freenode.org#islandora"
